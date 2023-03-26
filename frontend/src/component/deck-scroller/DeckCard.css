@@ -1,0 +1,10 @@
+.deckbox{
+    width: 100%; 
+}
+.deckcard{
+    display:inline-flex;
+}
+.Deck{
+    width: 70%;
+   
+}
