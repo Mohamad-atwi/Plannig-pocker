@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CardController;
+use App\Http\Controllers\DeckController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +18,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/cards', [CardController::class, 'index']);
+Route::get('/cards/{card}', [CardController::class, 'show']);
+
+Route::get('/decks', [DeckController::class, 'index']);
+Route::get('/decks/{deck}', [DeckController::class, 'show']);
+Route::get('/decks/{deck}/cards', [DeckController::class, 'showCards']);
