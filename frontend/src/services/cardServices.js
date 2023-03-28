@@ -4,7 +4,7 @@ import { API_URL } from '../config/environment';
 export const getCardsOfDeck = async (deckId) => {
     try {
         const response = await axios.get(`${API_URL}/decks/${deckId}/cards`);
-        return response;
+        return response.data;
     } catch (error) {
         console.error(error);
     }
