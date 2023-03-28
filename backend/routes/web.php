@@ -19,9 +19,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/cards', [CardController::class, 'index']);
-Route::get('/cards/{card}', [CardController::class, 'show']);
+Route::middleware(['cors'])->group(function () {
+    Route::get('/cards', [CardController::class, 'index']);
+    Route::get('/cards/{card}', [CardController::class, 'show']);
 
-Route::get('/decks', [DeckController::class, 'index']);
-Route::get('/decks/{deck}', [DeckController::class, 'show']);
-Route::get('/decks/{deck}/cards', [DeckController::class, 'showCards']);
+    Route::get('/decks', [DeckController::class, 'index']);
+    Route::get('/decks/{deck}', [DeckController::class, 'show']);
+    Route::get('/decks/{deck}/cards', [DeckController::class, 'showCards']);
+});
