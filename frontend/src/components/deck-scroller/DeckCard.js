@@ -1,8 +1,22 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
+import * as cadrServices from '../../services/cardServices';
+
 import Box from '@mui/material/Box';
 import "./DeckCard.css";
+import BasicCard from '../card';
+
 export default function Overflow() {
-  const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const [cards, setCards] = useState([]);
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      const data = await cadrServices.getCardsOfDeck(1); // TO BE CHANGE when we select a deck
+      setCards(data);
+    };
+    fetchBooks();
+  }, []);
+
   return (
 
     <div className='Deck'>
@@ -23,7 +37,9 @@ export default function Overflow() {
         }}
       >
         <div class="deckcard">
-          {numbers.map((number) => <div style={{ width: '100px', height: '10rem', backgroundColor: 'red', marginRight: '1rem' }} >{number}</div>)}
+          {cards.map((card) =>
+            <BasicCard key={card.id} number={card.value} />
+          )}
         </div>
 
       </Box>
