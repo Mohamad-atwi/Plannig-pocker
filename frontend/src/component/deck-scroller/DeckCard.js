@@ -2,7 +2,9 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import "./DeckCard.css";
 export default function Overflow() {
+    const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
     return (
+
         <div className='Deck'>
             <Box
                 component="div"
@@ -21,17 +23,7 @@ export default function Overflow() {
                 }}
             >
                 <div class="deckcard">
-                    <div style={{ width: '100px', height: '10rem', backgroundColor: 'red', marginRight:'1rem' }} />
-                    <div style={{ width: '100px', height: '10rem', backgroundColor: 'red', marginRight:'1rem' }} />
-                    <div style={{ width: '100px', height: '10rem', backgroundColor: 'red', marginRight:'1rem' }} />
-                    <div style={{ width: '100px', height: '10rem', backgroundColor: 'red', marginRight:'1rem' }} />
-                    <div style={{ width: '100px', height: '10rem', backgroundColor: 'red', marginRight:'1rem' }} />
-                    <div style={{ width: '100px', height: '10rem', backgroundColor: 'red', marginRight:'1rem' }} />
-                    <div style={{ width: '100px', height: '10rem', backgroundColor: 'red', marginRight:'1rem' }} />
-                    <div style={{ width: '100px', height: '10rem', backgroundColor: 'red', marginRight:'1rem' }} />
-                    <div style={{ width: '100px', height: '10rem', backgroundColor: 'red', marginRight:'1rem' }} />
-                    <div style={{ width: '100px', height: '10rem', backgroundColor: 'red', marginRight:'1rem' }} />
-                    <div style={{ width: '100px', height: '10rem', backgroundColor: 'red', marginRight:'1rem' }} />
+                    {numbers.map((number) => <div style={{ width: '100px', height: '10rem', backgroundColor: 'red', marginRight: '1rem' }} >{number}</div>)}
                 </div>
 
             </Box>
