@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         \App\Models\Deck::factory()->create();
         \App\Models\Card::factory(10)->create();
+        \App\Models\Session::factory(1)->create();
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([
