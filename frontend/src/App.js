@@ -1,10 +1,8 @@
-import Overflow from "./components/deck-scroller/DeckCard";
+import SessionPage from "./pages/SessionPage";
 function App() {
   return (
     <div className="App">
-      <h1>Welcome To The TSD-Project</h1>
-      <p>Choose the Card</p>
-      <Overflow />
+      <SessionPage />
     </div>
   );
 }
