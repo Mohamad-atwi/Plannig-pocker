@@ -54,7 +54,7 @@ export default function SessionPage() {
                 sx={{
                     flexGrow: 1,
                     padding: 3,
-                    maxWidth: '70vw'
+                    maxWidth: { xs: '80vw', sm: '60vw', md: '70vw' }
                 }}
             >
                 <DrawerHeader />
