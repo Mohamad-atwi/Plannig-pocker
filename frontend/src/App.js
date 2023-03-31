@@ -1,11 +1,12 @@
-import Overflow from "./components/deck-scroller/DeckCard";
+import React, { Suspense } from "react";
+import Routes from "./router";
+import { LinearProgress } from "@mui/material";
+
 function App() {
   return (
-    <div className="App">
-      <h1>Welcome To The TSD-Project</h1>
-      <p>Choose the Card</p>
-      <Overflow />
-    </div>
+    <Suspense fallback={<LinearProgress />}>
+      <Routes />
+    </Suspense>
   );
 }
 
