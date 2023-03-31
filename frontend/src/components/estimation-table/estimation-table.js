@@ -45,8 +45,8 @@ export default function EstimationTable() {
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Username</TableCell>
-                            <TableCell >Card</TableCell>
+                            <TableCell ><b>Username</b></TableCell>
+                            <TableCell ><b>Card</b></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
