@@ -36,11 +36,11 @@ export default function Overflow() {
           borderRadius: 2,
         }}
       >
-        <div class="deckcard">
+        <div className="deckcard">
           {cards.map((card) => (
             <BasicCard
               key={card.id}
-              number={card.value}
+              card={card}
               setSelectedCard={setSelectedCard}
               selectedCard={selectedCard}
             />

@@ -3,10 +3,10 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 
-export default function BasicCard({ number, setSelectedCard, selectedCard }) {
+export default function BasicCard({ card, setSelectedCard, selectedCard }) {
   const handleClick = () => {
-    setSelectedCard(number);
-    console.log("card selected ", number);
+    setSelectedCard(card);
+    console.log("card selected ", card);
   };
   return (
     <Card
@@ -18,8 +18,8 @@ export default function BasicCard({ number, setSelectedCard, selectedCard }) {
         justifyContent: "center",
         outline: "0.2rem",
         outlineStyle: "solid",
-        color: selectedCard === number ? "gold" : "black",
-        backgroundColor: selectedCard === number ? "green" : "white",
+        color: selectedCard === card ? "gold" : "black",
+        backgroundColor: selectedCard === card ? "green" : "white",
       }}
       // className={classes.card}
     >
@@ -33,7 +33,7 @@ export default function BasicCard({ number, setSelectedCard, selectedCard }) {
             marginTop: "1rem",
           }}
         >
-          {number}
+          {card.value}
         </Typography>
       </CardContent>
     </Card>
