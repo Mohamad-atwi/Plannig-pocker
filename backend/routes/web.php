@@ -3,6 +3,7 @@
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\DeckController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,4 +34,13 @@ Route::middleware(['cors'])->group(function () {
     Route::post('sessions', [SessionController::class, 'store']);
     Route::put('sessions/{session}', [SessionController::class, 'update']);
     Route::delete('sessions/{session}', [SessionController::class, 'destroy']);
+
+    Route::get('users',[UserController::class,'index']);
+    Route::get('users/{id}', [UserController::class, 'show']);
+    Route::post('users', [UserController::class, 'store']);
+    Route::put('users/{id}', [UserController::class, 'update']);
+    Route::delete('users/{id}', [UserController::class, 'destroy']);
+
+
+
 });
