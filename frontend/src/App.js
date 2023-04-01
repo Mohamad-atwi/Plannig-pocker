@@ -1,9 +1,12 @@
-import SessionPage from "./pages/SessionPage";
+import React, { Suspense } from "react";
+import Routes from "./router";
+import { LinearProgress } from "@mui/material";
+
 function App() {
   return (
-    <div className="App">
-      <SessionPage />
-    </div>
+    <Suspense fallback={<LinearProgress />}>
+      <Routes />
+    </Suspense>
   );
 }
 
