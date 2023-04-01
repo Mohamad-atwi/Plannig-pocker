@@ -19,10 +19,12 @@ class SessionFactory extends Factory
     public function definition(): array
     {
         return [
-            'connectionId' => fake()->unique()->regexify('[0-9]{10}') ,
-            'password'=> Str::random(8),
+            'connectionId' => fake()->unique()->regexify('[0-9]{10}'),
+            'password' => Str::random(8),
             'title' => fake()->sentence(3),
-            // 'owner_id' => \App\Models\User::all()->random()->id,
+            'owner_id' => function () {
+                return \App\Models\User::factory()->create()->id;
+            },
             'deck_id' => \App\Models\Deck::all()->random()->id,
             'terminated' => 0,
         ];

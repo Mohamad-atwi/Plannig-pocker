@@ -17,7 +17,7 @@ class Session extends Model
         'connectionId',
         'password',
         'title',
-        // 'owner_id',
+        'owner_id',
         'deck_id',
         'terminated'
     ];
@@ -27,9 +27,9 @@ class Session extends Model
         return $this->hasOne(Deck::class);
     }
 
-    // public function owner()
-    // {
-    //     return $this->belongsTo(User::class, 'owner_id' );
-    // }
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id' );
+    }
 
 }

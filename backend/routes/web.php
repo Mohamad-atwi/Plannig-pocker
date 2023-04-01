@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\DeckController;
 use App\Http\Controllers\SessionController;
@@ -41,6 +42,7 @@ Route::middleware(['cors'])->group(function () {
     Route::put('users/{id}', [UserController::class, 'update']);
     Route::delete('users/{id}', [UserController::class, 'destroy']);
 
-
+    Route::post('login', [AuthController::class, 'store']);
+    Route::post('logout', [AuthController::class, 'destroy']);
 
 });
