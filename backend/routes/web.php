@@ -26,4 +26,5 @@ Route::middleware(['cors'])->group(function () {
     Route::get('/decks', [DeckController::class, 'index']);
     Route::get('/decks/{deck}', [DeckController::class, 'show']);
     Route::get('/decks/{deck}/cards', [DeckController::class, 'showCards']);
+    Route::get('/users', [UserController::class, 'index']);
 });
