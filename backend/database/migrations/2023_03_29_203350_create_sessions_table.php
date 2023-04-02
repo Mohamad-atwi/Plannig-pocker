@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('title');
             $table->unsignedBigInteger('deck_id');
             $table->foreign('deck_id')->references('id')->on('decks');
-            // $table->unsignedBigInteger('owner_id');
-            // $table->foreign('owner_id')->references('id')->on('users');
+            $table->unsignedBigInteger('owner_id');
+            $table->foreign('owner_id')->references('id')->on('users');
             $table->tinyInteger('terminated');
             $table->timestamps();
         });
