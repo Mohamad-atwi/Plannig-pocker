@@ -22,7 +22,7 @@ export const getEstimations = async (sessionId) => {
 
 export const saveEstimation = async (userId, cardId, sessionId) => {
     return await axios.post(`${API_URL}/user_estimations`, {
-        user_id: userId,
+        // user_id: userId,
         card_id: cardId,
         session_id: sessionId
     });
