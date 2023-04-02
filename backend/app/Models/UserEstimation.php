@@ -14,6 +14,21 @@ class UserEstimation extends Model
 
     protected $fillable = [
         'user-id',
-        'session-id'
+        'session-id',
+        'card-id'
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function session()
+    {
+        return $this->belongsTo(Session::class);
+    }
+
+    public function card()
+    {
+        return $this->belongsTo(Card::class);
+    }
 }

@@ -4,6 +4,8 @@ use App\Http\Controllers\CardController;
 use App\Http\Controllers\DeckController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserEstimationController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,6 +44,11 @@ Route::middleware(['cors'])->group(function () {
     Route::delete('users/{id}', [UserController::class, 'destroy']);
 
 
+    Route::get('user_estimations',[UserEstimationController::class,'index']);
+    Route::get('user_estimations/{id}', [UserEstimationController::class, 'show']);
+    Route::post('user_estimations', [UserEstimationController::class, 'store']);
+    Route::put('user_estimations/{id}', [UserEstimationController::class, 'update']);
+    Route::delete('user_estimations/{id}', [UserEstimationController::class, 'destroy']);
 
    Route::get('/decks', [DeckController::class, 'index']);
     Route::get('/decks/{deck}', [DeckController::class, 'show']);

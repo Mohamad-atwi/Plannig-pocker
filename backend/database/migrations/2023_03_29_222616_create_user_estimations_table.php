@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('session_id');
-            $table->foreign('user_id')->references('id')->on('user_estimations');
-            $table->foreign('session_id')->references('id')->on('user_estimations');
+            $table->unsignedBigInteger('card_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('session_id')->references('id')->on('sessions');
+            $table->foreign('card_id')->references('id')->on('cards');
             $table->timestamps();
         });
     }
