@@ -7,37 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
-function createData(
-    username,
-    card
-) {
-    return { username, card };
-}
-
-const rows = [
-    createData('Frozen yoghurt1', 159),
-    createData('Frozen yoghurt2', 159),
-    createData('Frozen yoghurt3', 159),
-    createData('Frozen yoghurt4', 159),
-    createData('Frozen yoghurt55', 159),
-    createData('Frozen yoghurt6', 159),
-    createData('Frozen yoghurt87', 159),
-    createData('Frozen yoghurt8', 159),
-    createData('Frozen yoghurt9', 159),
-    createData('Frozen yoghurt99', 159),
-    createData('Frozen yoghurt999', 159),
-    createData('Frozen yoghurt7', 159),
-    createData('Frozen yoghurt54', 159),
-    createData('Frozen yoghurt43', 159),
-    createData('Frozen yoghurt22', 159),
-    createData('Frozen yoghurt12', 159),
-    createData('Frozen yoghurt11', 159),
-    createData('Frozen yoghurt123', 159),
-    createData('Frozen yoghurt5', 159),
-    createData('Frozen yoghurt', 159),
-];
-
-export default function EstimationTable() {
+export default function EstimationTable({estimations, hasVoted}) {
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -50,14 +20,14 @@ export default function EstimationTable() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
+                        {estimations.map((estimation) => (
                             <TableRow
-                                key={row.username}
+                                key={estimation.id}
                             >
                                 <TableCell component="th" scope="row">
-                                    {row.username}
+                                    {estimation.username}
                                 </TableCell>
-                                <TableCell>{row.card}</TableCell>
+                                <TableCell>{hasVoted ? estimation.card : ''}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

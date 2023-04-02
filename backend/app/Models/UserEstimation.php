@@ -17,6 +17,7 @@ class UserEstimation extends Model
         'session-id',
         'card-id'
     ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

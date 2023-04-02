@@ -1,25 +1,61 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import * as cadrServices from "../../services/cardServices";
+import * as sessionServices from "../../services/estimationServices";
+import HowToVoteIcon from '@mui/icons-material/HowToVote';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
+import { Button } from '@mui/material';
 import Box from "@mui/material/Box";
 import "./DeckCard.css";
 import BasicCard from "../card";
 
-export default function Overflow() {
+export default function Deck({ deckId, selectedCard, setSelectedCard, hasVoted, setHasVoted, refreshEstimations }) {
   const [cards, setCards] = useState([]);
-  const [selectedCard, setSelectedCard] = useState(null);
 
   useEffect(() => {
-    const fetchBooks = async () => {
-      const data = await cadrServices.getCardsOfDeck(1); // TO BE CHANGE when we select a deck
+    const fetchCards = async () => {
+      const data = await cadrServices.getCardsOfDeck(deckId);
       setCards(data);
     };
-    fetchBooks();
+    fetchCards();
   }, []);
+
+  const handleReset = () => {
+    // Handle reset here
+    setSelectedCard(null);
+    setHasVoted(false);
+  };
+
+  const handleVote = (event) => {
+    event.preventDefault();
+    sessionServices.saveEstimation(1, selectedCard.id, 1)
+      .then(response => {
+        console.log('Vote saved successfully:', response.data);
+        refreshEstimations();
+        setHasVoted(true);
+      })
+      .catch(error => {
+        alert("Error while voting!");
+      });
+  };
+
+  function showAlert() {
+    alert("You already voted !");
+  }
 
   return (
     <div className="Deck">
+      <Box display="flex" justifyContent="flex-end">
+        {selectedCard && !hasVoted && (
+          <Button variant="outlined" startIcon={<RestartAltIcon />} onClick={handleReset} disabled={!selectedCard && !hasVoted}>
+            Reset
+          </Button>
+        )}
+        <Button variant="contained" endIcon={<HowToVoteIcon />} style={{ marginLeft: '8px' }} onClick={handleVote} disabled={!selectedCard || hasVoted}>
+          {hasVoted ? 'Voted' : 'Vote'}
+        </Button>
+      </Box>
       <Box
         component="div"
         sx={{
@@ -41,7 +77,7 @@ export default function Overflow() {
             <BasicCard
               key={card.id}
               card={card}
-              setSelectedCard={setSelectedCard}
+              setSelectedCard={!hasVoted ? setSelectedCard : showAlert}
               selectedCard={selectedCard}
             />
           ))}
