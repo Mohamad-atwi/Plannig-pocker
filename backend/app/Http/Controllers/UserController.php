@@ -26,7 +26,7 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         //Create a new user
-        try {   
+        try {
             $user = User::factory()->create($request->all());
             return response()->json([
                 'message' => "User successfully created."
@@ -88,17 +88,17 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        // delete user 
+        // delete user
         $users = User::find($id);
         if(!$users){
           return response()->json([
              'message'=>'User Not Found.'
           ],404);
         }
-    
+
         // Delete Post
         $users->delete();
-    
+
         // Return Json Response
         return response()->json([
             'message' => "User successfully deleted."
