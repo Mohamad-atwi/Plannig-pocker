@@ -56,6 +56,16 @@ class SessionController extends Controller
     }
 
     /**
+     * Display the estimations of the specified resource.
+     */
+    public function showEstimations(Session $session)
+    {
+        $session = Session::find($session->id);
+        $estimations = $session->estimations()->with('user', 'card')->get();
+        return response()->json($estimations, Response::HTTP_OK);
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(SessionStoreRequest $request, Session $session)

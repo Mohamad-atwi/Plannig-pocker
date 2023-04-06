@@ -4,6 +4,8 @@ import { LinearProgress } from "@mui/material";
 
 import SignupForm from "../features/auth/signup";
 import Home from "../features/home/home";
+import SessioPage from "../pages/SessionPage";
+
 const index = () => {
   return (
     <Router forceRefresh={true}>
@@ -12,6 +14,7 @@ const index = () => {
           {/* Public URL */}
           <Route index path="/" element={<SignupForm />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/session" element={<SessioPage />} />
         </Routes>
       </Suspense>
     </Router>

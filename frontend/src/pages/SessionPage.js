@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState, useEffect } from "react";
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -8,10 +9,14 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import { Button } from '@mui/material';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
+import Deck from '../components/deck-scroller/DeckCard';
 import EstimationTable from '../components/estimation-table/estimation-table';
-import Overflow from '../components/deck-scroller/DeckCard';
+
+import * as estimationServices from "../services/estimationServices";
 
 const drawerWidth = { xs: '80vw', sm: '35vw', md: '25vw' };
 
@@ -25,7 +30,20 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 export default function SessionPage() {
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = useState(true);
+    const [estimations, setEstimations] = useState([]);
+    const [selectedCard, setSelectedCard] = useState(null);
+    const [hasVoted, setHasVoted] = useState(false);
+
+    const fetchEstimations = async () => {
+        const data = await estimationServices.getEstimations(1);// TO BE CHANGE when we select a session
+        setEstimations(data);
+    };
+
+    useEffect(() => {
+        fetchEstimations();
+    }, []);
+
 
     const handleDrawerToggel = () => {
         setOpen(!open);
@@ -58,7 +76,14 @@ export default function SessionPage() {
                 }}
             >
                 <DrawerHeader />
-                <Overflow />
+                <Deck
+                    deckId={1}
+                    selectedCard={selectedCard}
+                    setSelectedCard={setSelectedCard}
+                    hasVoted={hasVoted}
+                    setHasVoted={setHasVoted}
+                    refreshEstimations={fetchEstimations}
+                />
             </Box>
             <Drawer
                 sx={{
@@ -79,15 +104,17 @@ export default function SessionPage() {
                     <Typography variant="h6" noWrap sx={{ flexGrow: 1 }} component="div">
                         Votes
                     </Typography>
+                    <Button variant="contained" endIcon={<RefreshIcon />} style={{ marginLeft: '8px' }} onClick={fetchEstimations}>
+                        Refresh
+                    </Button>
                 </DrawerHeader>
                 <Divider />
-                <Typography variant="h6" noWrap sx={{ flexGrow: 1 }} component="div">
-                    <EstimationTable />
-                </Typography>
-                <Divider />
-                <Typography variant="h6" noWrap sx={{ flexGrow: 1 }} component="div">
-                    another infos
-                </Typography>
+                <Box sx={{ flexGrow: 1 }} component="div">
+                    <EstimationTable
+                        estimations={estimations}
+                        hasVoted={hasVoted}
+                    />
+                </Box>
             </Drawer>
         </Box>
     );

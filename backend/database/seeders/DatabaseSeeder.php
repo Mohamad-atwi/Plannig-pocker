@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
         \App\Models\Card::factory(10)->create();
         \App\Models\User::factory(10)->create();
         \App\Models\Session::factory(1)->create();
-        \App\Models\UserEstimation::factory(10)->create();
+        \App\Models\UserEstimation::factory(3)->create();
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

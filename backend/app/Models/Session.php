@@ -32,4 +32,9 @@ class Session extends Model
         return $this->belongsTo(User::class, 'owner_id' );
     }
 
+    public function estimations()
+    {
+        return $this->hasMany(UserEstimation::class);
+    }
+
 }
