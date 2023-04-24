@@ -1,15 +1,41 @@
 import { useState } from "react";
-import { TextField, Button, Grid, Paper } from "@mui/material/";
-import { useNavigate } from "react-router-dom";
+import { TextField, Button, Grid, Paper ,Typography} from "@mui/material/";
+import { useNavigate , Link } from "react-router-dom";
 
 function SignupForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [comfirmPassword, setComfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isSignedUp, setIsSignedUp] = useState(false);
+
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    navigate("/home", true);
+  
+    if (password !== comfirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+  
+    const response = await fetch("http://127.0.0.1:8000/api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ username, password })
+    });
+  
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem("user", JSON.stringify(data.user));
+      setIsSignedUp(true);
+      navigate("/");
+    } else {
+      const error = await response.text();
+      setError(error);
+    }
   };
 
   return (
@@ -25,47 +51,76 @@ function SignupForm() {
         elevation={7}
         style={{
           padding: 20,
-          width: "15rem",
+          width: "20rem",
 
           margin: 0,
           justifyContent: "center",
           textAlign: "center",
         }}
       >
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={2} direction="column">
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                // fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                // fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                //  fullWidth
-              >
-                Signup
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
-      </Paper>
-    </div>
+        {isSignedUp ? (
+          <Typography variant="h6" style={{color:"green"}}>Thanks for signing up!</Typography>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={2} direction="column">
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Confirm Password"
+                  type="password"
+                  value={comfirmPassword}
+                  onChange={(e) => setComfirmPassword(e.target.value)}
+                />
+              </Grid>
+              {error &&
+          <Grid item xs={12}>
+          <Typography variant="body1" color="error">{error}</Typography>
+        </Grid>
+        }
+        <Grid item xs={12}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+          >
+            Signup
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="body1" color="textSecondary">
+            Already have an account?{" "}
+            <Link
+              to="/"
+              style={{
+                textDecoration: "none",
+                color: "#1565c0",
+              }}
+            >
+              Login
+            </Link>
+          </Typography>
+        </Grid>
+      </Grid>
+    </form>
+  )}
+</Paper>
+</div>
   );
 }
 
 export default SignupForm;
+
