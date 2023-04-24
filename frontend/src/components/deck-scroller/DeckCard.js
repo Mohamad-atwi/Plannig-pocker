@@ -29,7 +29,8 @@ export default function Deck({ deckId, selectedCard, setSelectedCard, hasVoted, 
 
   const handleVote = (event) => {
     event.preventDefault();
-    sessionServices.saveEstimation(1, selectedCard.id, 1)
+    const user = JSON.parse(sessionStorage.user)
+      sessionServices.saveEstimation(user.id, selectedCard.id, 1)
       .then(response => {
         console.log('Vote saved successfully:', response.data);
         refreshEstimations();
