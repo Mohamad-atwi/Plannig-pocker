@@ -8,6 +8,8 @@ use App\Http\Controllers\DeckController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserEstimationController;
+use App\Http\Controllers\AuthSessionController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -33,6 +35,7 @@ Route::middleware(['cors'])->group(function () {
     Route::post('sessions', [SessionController::class, 'store']);
     Route::put('sessions/{session}', [SessionController::class, 'update']);
     Route::delete('sessions/{session}', [SessionController::class, 'destroy']);
+    Route::post('join', [AuthSessionController::class, 'store']);
 
     Route::get('users', [UserController::class, 'index']);
     Route::get('users/{id}', [UserController::class, 'show']);

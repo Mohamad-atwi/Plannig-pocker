@@ -11,3 +11,37 @@ export const getSession = async (sessionId) => {
         console.error(error);
     }
 };
+
+export const createSession = async (title, password) => {
+    try {
+        const response = await axios.post(`${API_URL}/sessions`, {
+            title: title,
+            password: password
+        }, {
+            headers: {
+                'Cache-Control': 'no-cache'
+            }
+        });
+        return response;
+    } catch (error) {
+        return [];
+    }
+}
+
+export const Join = async (connectionId, password) => {
+    try {
+        const response = await axios.post(`${API_URL}/join`, {
+            connectionId: connectionId,
+            password: password
+        })
+
+        if (response.status === 200) {
+            sessionStorage.setItem('session', JSON.stringify(response.data.session));
+        };
+
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
