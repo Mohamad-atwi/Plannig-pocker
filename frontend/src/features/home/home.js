@@ -19,7 +19,7 @@ function Home() {
     <div className="App" >
       <h1>Welcome To The TSD-Project</h1>
       <p>Choose the Card</p>
-      <Link to="/session" > go to session</Link>
+      <Link to="/session/1" > go to session</Link>
       <div style={{ display: 'flex' }}>
       <Card sx={{ maxWidth: 345, marginRight: 2 }}>
         <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
