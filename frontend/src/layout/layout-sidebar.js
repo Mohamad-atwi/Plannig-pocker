@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react';
-import {Link, Outlet, useLocation } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,17 +9,24 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-
+import HomeIcon from '@mui/icons-material/Home';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { logout } from '../services/userServices';
 const drawerWidth = 240;
 
 export default function LayoutSideBar() {
-    const [SessionPage,setSessionPage] = useState(false);
+    const [SessionPage, setSessionPage] = useState(false);
     const projectPath = useLocation();
+    const navigate = useNavigate();
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    }
 
     useEffect(() => {
-            setSessionPage(projectPath.pathname.includes("session"));
+        setSessionPage(projectPath.pathname.includes("session"));
     })
 
     return (
@@ -39,32 +46,47 @@ export default function LayoutSideBar() {
                 <Toolbar />
                 <Divider />
                 <List>
-                    {[{ text: 'Home', link: '' }, { text: 'History', link: '/history' }, { text: 'Logout', link: '/logout' }].map((text, index) => (
-                        <ListItem key={text.text} disablePadding>
-                            <ListItemButton component={Link} to={text.link}>
-                                <ListItemIcon>
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text.text} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
+                    <ListItem disablePadding>
+                        <ListItemButton component={Link} to=''>
+                            <ListItemIcon>
+                                <HomeIcon />
+                            </ListItemIcon>
+                            <ListItemText primary='Home' />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem disablePadding>
+                        <ListItemButton component={Link} to='/history'>
+                            <ListItemIcon>
+                                <HistoryEduIcon />
+                            </ListItemIcon>
+                            <ListItemText primary='History' />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem disablePadding>
+                        <ListItemButton onClick={handleLogout}>
+                            <ListItemIcon>
+                                <LogoutIcon />
+                            </ListItemIcon>
+                            <ListItemText primary='Logout' />
+                        </ListItemButton>
+                    </ListItem>
                 </List>
-                <Divider />
-                {SessionPage ? <List>
-                    {[{ text: 'Exit', link: '' }, ].map((text, index) => (
-                        <ListItem key={text.text} disablePadding>
-                            <ListItemButton component={Link} to={text.link}>
-                                <ListItemIcon>
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text.text} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
-                :
-                <></>}
+                {SessionPage ?
+                    <>
+                        <Divider />
+                        <List>
+                            <ListItem disablePadding>
+                                <ListItemButton component={Link} to='/'>
+                                    <ListItemIcon>
+                                        <ExitToAppIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary='Exit' />
+                                </ListItemButton>
+                            </ListItem>
+                        </List>
+                    </>
+                    :
+                    <></>}
             </Drawer>
             {<Outlet />}
         </Box>
