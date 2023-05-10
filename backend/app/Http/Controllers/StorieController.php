@@ -23,10 +23,13 @@ class StorieController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Storie $request)
+    public function store(Request $request)
     {
         try {
-            $storie = Storie::factory()->create($request->all());
+            $requestData = json_decode($request->getContent(), true);
+
+            $storie = Storie::create($requestData);
+
             return response()->json([
                 'message' => "Storie successfully created.",
                 'storie' => $storie,
@@ -37,6 +40,7 @@ class StorieController extends Controller
             ], 500);
         }
     }
+
 
     /**
      * Display the specified resource.

@@ -60,6 +60,6 @@ Route::middleware(['cors'])->group(function () {
     Route::get('stories', [StorieController::class, 'index']);
     Route::get('stories/{id}', [StorieController::class, 'show']);
     Route::post('stories', [StorieController::class, 'store']);
-    Route::put('stories/{id}', [StorieController::class, 'update']);
+    // Route::put('stories/{id}', [StorieController::class, 'update']);
     Route::delete('stories/{id}', [StorieController::class, 'destroy']);
 });
