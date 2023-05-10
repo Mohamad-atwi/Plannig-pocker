@@ -9,7 +9,7 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserEstimationController;
 use App\Http\Controllers\AuthSessionController;
-
+use App\Http\Controllers\StorieController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -56,4 +56,10 @@ Route::middleware(['cors'])->group(function () {
     Route::get('/decks/{deck}', [DeckController::class, 'show']);
     Route::get('/decks/{deck}/cards', [DeckController::class, 'showCards']);
     Route::get('/users', [UserController::class, 'index']);
+
+    Route::get('stories', [StorieController::class, 'index']);
+    Route::get('stories/{id}', [StorieController::class, 'show']);
+    Route::post('stories', [StorieController::class, 'store']);
+    Route::put('stories/{id}', [StorieController::class, 'update']);
+    Route::delete('stories/{id}', [StorieController::class, 'destroy']);
 });
