@@ -17,6 +17,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import Deck from '../components/deck-scroller/DeckCard';
 import EstimationTable from '../components/estimation-table/estimation-table';
 
+import { pusher } from '../services/pusher'
 import * as estimationServices from "../services/estimationServices";
 import * as sessionServices from "../services/sessionServices";
 const drawerWidth = { xs: '80vw', sm: '35vw', md: '25vw' };
@@ -51,11 +52,27 @@ export default function SessionPage() {
     };
 
     useEffect(() => {
-        fetchSession().then(()=>{
+        fetchSession().then(() => {
             fetchEstimations();
         });
     }, []);
 
+    useEffect(() => {
+
+
+        const channel1 = pusher.subscribe(`session-${sessionId}`);
+
+        channel1.bind('voting', function (data) {
+            fetchEstimations();
+        });
+
+
+        // Clean up the Pusher subscription when the component unmounts
+        return () => {
+            channel1.unbind('voting');
+            pusher.unsubscribe(`session-${sessionId}`);
+        };
+    }, []);
 
     const handleDrawerToggel = () => {
         setOpen(!open);
@@ -95,8 +112,8 @@ export default function SessionPage() {
                     hasVoted={hasVoted}
                     setHasVoted={setHasVoted}
                     refreshEstimations={fetchEstimations}
-                /> 
-            : <></>}
+                />
+                    : <></>}
             </Box>
             <Drawer
                 sx={{
