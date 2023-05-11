@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\VotingEvent;
 use App\Models\UserEstimation;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -35,6 +36,7 @@ class UserEstimationController extends Controller
         //JSON FILE: body: {"user_id": 1,"session_id": 1,"card_id": 1}
         try {
             $user_estimations = UserEstimation::factory()->create($request->all());
+            VotingEvent::dispatchIf($user_estimations,$user_estimations->session_id);
             return response()->json([
                 'message' => "UserEstimation successfully created."
             ],200);
