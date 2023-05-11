@@ -16,8 +16,9 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 
 import Deck from '../components/deck-scroller/DeckCard';
 import EstimationTable from '../components/estimation-table/estimation-table';
-
+import StorieCard from '../components/storie';
 import { pusher } from '../services/pusher'
+
 import * as estimationServices from "../services/estimationServices";
 import * as sessionServices from "../services/sessionServices";
 const drawerWidth = { xs: '80vw', sm: '35vw', md: '25vw' };
@@ -113,6 +114,7 @@ export default function SessionPage() {
                     setHasVoted={setHasVoted}
                     refreshEstimations={fetchEstimations}
                 />
+                <StorieCard/>
                     : <></>}
             </Box>
             <Drawer
