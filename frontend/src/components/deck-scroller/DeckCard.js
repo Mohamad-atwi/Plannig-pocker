@@ -10,7 +10,7 @@ import Box from "@mui/material/Box";
 import "./DeckCard.css";
 import BasicCard from "../card";
 
-export default function Deck({ deckId, selectedCard, setSelectedCard, hasVoted, setHasVoted, refreshEstimations }) {
+export default function Deck({ votedStories, setVotedStories,sessionId, storyId, deckId, selectedCard, setSelectedCard, refreshEstimations }) {
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
@@ -24,17 +24,17 @@ export default function Deck({ deckId, selectedCard, setSelectedCard, hasVoted, 
   const handleReset = () => {
     // Handle reset here
     setSelectedCard(null);
-    setHasVoted(false);
+    setVotedStories(votedStories.filter((storieId) => storieId !== storyId));
   };
 
   const handleVote = (event) => {
     event.preventDefault();
     const user = JSON.parse(sessionStorage.user)
-      sessionServices.saveEstimation(user.id, selectedCard.id, 1)
+    sessionServices.saveEstimation(user.id, selectedCard.id, sessionId, storyId)
       .then(response => {
         console.log('Vote saved successfully:', response.data);
         refreshEstimations();
-        setHasVoted(true);
+        setVotedStories([...votedStories,storyId]);
       })
       .catch(error => {
         alert("Error while voting!");
@@ -48,13 +48,13 @@ export default function Deck({ deckId, selectedCard, setSelectedCard, hasVoted, 
   return (
     <div className="Deck">
       <Box display="flex" justifyContent="flex-end">
-        {selectedCard && !hasVoted && (
-          <Button variant="outlined" startIcon={<RestartAltIcon />} onClick={handleReset} disabled={!selectedCard && !hasVoted}>
+        {selectedCard && !votedStories.includes(storyId) && (
+          <Button variant="outlined" startIcon={<RestartAltIcon />} onClick={handleReset} disabled={!selectedCard && !votedStories.includes(storyId)}>
             Reset
           </Button>
         )}
-        <Button variant="contained" endIcon={<HowToVoteIcon />} style={{ marginLeft: '8px' }} onClick={handleVote} disabled={!selectedCard || hasVoted}>
-          {hasVoted ? 'Voted' : 'Vote'}
+        <Button variant="contained" endIcon={<HowToVoteIcon />} style={{ marginLeft: '8px' }} onClick={handleVote} disabled={!selectedCard || votedStories.includes(storyId)}>
+          {votedStories.includes(storyId) ? 'Voted' : 'Vote'}
         </Button>
       </Box>
       <Box
@@ -78,7 +78,7 @@ export default function Deck({ deckId, selectedCard, setSelectedCard, hasVoted, 
             <BasicCard
               key={card.id}
               card={card}
-              setSelectedCard={!hasVoted ? setSelectedCard : showAlert}
+              setSelectedCard={!votedStories.includes(storyId) ? setSelectedCard : showAlert}
               selectedCard={selectedCard}
             />
           ))}
