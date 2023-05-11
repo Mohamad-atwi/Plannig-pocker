@@ -17,9 +17,9 @@ function JoinsSession() {
     if (sessionid && password) {
       res = await sessionServices.Join(sessionid, password)
     }
-    if (res) {
+    if (res.status === 200) {
       setIsJoinedIn(true);
-      navigate("/session");
+      navigate(`/session/${res.data.session.id}`);
     }
     else {
       setErrorMessage("Invalid credentials");

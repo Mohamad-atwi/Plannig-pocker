@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from "react";
+import { useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -16,8 +17,10 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import Deck from '../components/deck-scroller/DeckCard';
 import EstimationTable from '../components/estimation-table/estimation-table';
 import StorieCard from '../components/storie';
-import * as estimationServices from "../services/estimationServices";
+import { pusher } from '../services/pusher'
 
+import * as estimationServices from "../services/estimationServices";
+import * as sessionServices from "../services/sessionServices";
 const drawerWidth = { xs: '80vw', sm: '35vw', md: '25vw' };
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -34,23 +37,50 @@ export default function SessionPage() {
     const [estimations, setEstimations] = useState([]);
     const [selectedCard, setSelectedCard] = useState(null);
     const [hasVoted, setHasVoted] = useState(false);
+    const { sessionId } = useParams('sessionId');
+    const [deckId, setDeckId] = useState(null);
+    const [session, setSession] = useState();
 
     const fetchEstimations = async () => {
-        const data = await estimationServices.getEstimations(1);// TO BE CHANGE when we select a session
+        const data = await estimationServices.getEstimations(sessionId);// TO BE CHANGE when we select a session
         setEstimations(data);
     };
 
+    const fetchSession = async () => {
+        const data = await sessionServices.getSession(sessionId);// TO BE CHANGE when we select a session
+        setSession(data.session);
+        setDeckId(data.session.deck_id);
+    };
+
     useEffect(() => {
-        fetchEstimations();
+        fetchSession().then(() => {
+            fetchEstimations();
+        });
     }, []);
 
+    useEffect(() => {
+
+
+        const channel1 = pusher.subscribe(`session-${sessionId}`);
+
+        channel1.bind('voting', function (data) {
+            fetchEstimations();
+        });
+
+
+        // Clean up the Pusher subscription when the component unmounts
+        return () => {
+            channel1.unbind('voting');
+            pusher.unsubscribe(`session-${sessionId}`);
+        };
+    }, []);
 
     const handleDrawerToggel = () => {
         setOpen(!open);
     };
 
     return (
-        <Box sx={{ display: 'flex', maxWidth: '100vw' }}>
+        <Box >
             <AppBar open={open}>
                 <Toolbar>
                     <Typography variant="h6" sx={{ flexGrow: 1 }} component="div">
@@ -76,8 +106,8 @@ export default function SessionPage() {
                 }}
             >
                 <DrawerHeader />
-                <Deck
-                    deckId={1}
+                {deckId ? <Deck
+                    deckId={deckId}
                     selectedCard={selectedCard}
                     setSelectedCard={setSelectedCard}
                     hasVoted={hasVoted}
@@ -85,6 +115,7 @@ export default function SessionPage() {
                     refreshEstimations={fetchEstimations}
                 />
                 <StorieCard/>
+                    : <></>}
             </Box>
             <Drawer
                 sx={{

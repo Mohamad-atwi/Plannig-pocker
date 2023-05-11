@@ -9,6 +9,7 @@ import LoginForm from "../features/auth/login";
 import PrivateRoute from "./PrivateRoutes";
 import JoinsSession from "../features/session/JoinSession";
 import CreateSession from "../features/session/CreateSession";
+import LayoutSideBar from "../layout/layout-sidebar";
 const index = () => {
 
   return (
@@ -16,8 +17,12 @@ const index = () => {
       <Suspense fallback={<LinearProgress />}>
         <Routes>
           <Route exact path='/' element={<PrivateRoute />}>
+
+            <Route path="/" element={<LayoutSideBar />}>
             <Route path="/" element={<Home />} />
-            <Route path="/session" element={<SessioPage />} />
+            <Route path="/session/:sessionId" element={<SessioPage />} />
+            </Route>
+
             <Route path="/JoinSession" element={<JoinsSession />} />
             <Route path="/CreateSession" element={<CreateSession />} />
 
