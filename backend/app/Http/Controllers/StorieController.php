@@ -58,6 +58,19 @@ class StorieController extends Controller
         ], 200);
     }
 
+        public function showBySession($session_id)
+    {
+        $storie = Storie::where('session_id',$session_id)->get();
+        if (!$storie) {
+            return response()->json([
+                'message' => 'Storie Not Found.'
+            ], 404);
+        }
+        return response()->json([
+            'storie' => $storie
+        ], 200);
+    }
+
 
 
     /**

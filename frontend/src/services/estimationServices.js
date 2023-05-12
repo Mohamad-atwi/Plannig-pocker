@@ -13,6 +13,7 @@ export const getEstimations = async (sessionId) => {
                 "card_id": data.card_id,
                 "username": data.user.username,
                 "card": data.card.value,
+                "story_id": data.story_id,
             };
         });
     } catch (error) {
@@ -20,10 +21,11 @@ export const getEstimations = async (sessionId) => {
     }
 };
 
-export const saveEstimation = async (userId, cardId, sessionId) => {
+export const saveEstimation = async (userId, cardId, sessionId,storyId) => {
     return await axios.post(`${API_URL}/user_estimations`, {
         user_id: userId,
         card_id: cardId,
-        session_id: sessionId
+        session_id: sessionId,
+        story_id: storyId,
     });
 }

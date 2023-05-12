@@ -18,7 +18,7 @@ import Deck from '../components/deck-scroller/DeckCard';
 import EstimationTable from '../components/estimation-table/estimation-table';
 import StorieCard from '../components/storie';
 import { pusher } from '../services/pusher'
-
+import * as storiesServices from "../services/storyServices";
 import * as estimationServices from "../services/estimationServices";
 import * as sessionServices from "../services/sessionServices";
 const drawerWidth = { xs: '80vw', sm: '35vw', md: '25vw' };
@@ -36,18 +36,27 @@ export default function SessionPage() {
     const [open, setOpen] = useState(true);
     const [estimations, setEstimations] = useState([]);
     const [selectedCard, setSelectedCard] = useState(null);
-    const [hasVoted, setHasVoted] = useState(false);
+    // const [hasVoted, setHasVoted] = useState(false);
     const { sessionId } = useParams('sessionId');
     const [deckId, setDeckId] = useState(null);
     const [session, setSession] = useState();
+    const [stories, setStories] = useState([]);
+    const [storyId, setStoryId] = useState(null);
+    const [votedStories, setVotedStories] = useState([]);
 
     const fetchEstimations = async () => {
-        const data = await estimationServices.getEstimations(sessionId);// TO BE CHANGE when we select a session
+        const data = await estimationServices.getEstimations(sessionId);
         setEstimations(data);
     };
 
+    const fetchStories = async () => {
+        const data = await storiesServices.getStories(sessionId);
+        setStories(data);
+
+    };
+
     const fetchSession = async () => {
-        const data = await sessionServices.getSession(sessionId);// TO BE CHANGE when we select a session
+        const data = await sessionServices.getSession(sessionId);
         setSession(data.session);
         setDeckId(data.session.deck_id);
     };
@@ -59,11 +68,16 @@ export default function SessionPage() {
     }, []);
 
     useEffect(() => {
+        fetchStories().then(() => {
+            stories[0] === undefined ? setStoryId(null) : setStoryId(stories[0].id) ;
+        });
+    },[session])
 
 
+    useEffect(() => {
         const channel1 = pusher.subscribe(`session-${sessionId}`);
 
-        channel1.bind('voting', function (data) {
+        channel1.bind('voting', function () {
             fetchEstimations();
         });
 
@@ -74,6 +88,12 @@ export default function SessionPage() {
             pusher.unsubscribe(`session-${sessionId}`);
         };
     }, []);
+
+    useEffect(()=>{
+        // setHasVoted(votedStories.includes(storyId));
+        setSelectedCard(null);
+        setOpen(votedStories.includes(storyId))
+    },[votedStories,storyId])
 
     const handleDrawerToggel = () => {
         setOpen(!open);
@@ -110,12 +130,19 @@ export default function SessionPage() {
                     deckId={deckId}
                     selectedCard={selectedCard}
                     setSelectedCard={setSelectedCard}
-                    hasVoted={hasVoted}
-                    setHasVoted={setHasVoted}
                     refreshEstimations={fetchEstimations}
+                    storyId={storyId}
+                    votedStories={votedStories}
+                    setVotedStories={setVotedStories}
+                    sessionId={sessionId}
                 />
-                <StorieCard/>
-                    : <></>}
+                    :
+                    <></>}
+                {stories ? (stories.length > 0 ?
+                    stories.map(storie => <StorieCard key={storie.id} setStoryId={setStoryId} story={storie} />)
+                    :
+                    <></>) : <></>
+                }
             </Box>
             <Drawer
                 sx={{
@@ -130,7 +157,7 @@ export default function SessionPage() {
                 open={open}
             >
                 <DrawerHeader>
-                    <IconButton onClick={handleDrawerToggel} sx={{ display: { xs: 'block', sm: 'none', md: 'none', lg: 'none', xl: 'none' } }} >
+                    <IconButton onClick={handleDrawerToggel} sx={{ display: 'block' }} >
                         <ChevronRightIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap sx={{ flexGrow: 1 }} component="div">
@@ -143,8 +170,8 @@ export default function SessionPage() {
                 <Divider />
                 <Box sx={{ flexGrow: 1 }} component="div">
                     <EstimationTable
-                        estimations={estimations}
-                        hasVoted={hasVoted}
+                        estimations={estimations.filter((estimation)=>estimation.story_id === storyId)}
+                        hasVoted={votedStories.includes(storyId)}
                     />
                 </Box>
             </Drawer>

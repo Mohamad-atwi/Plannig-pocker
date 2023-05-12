@@ -8,14 +8,14 @@ import Typography from '@mui/material/Typography';
 
 
 
-export default function StorieCard() {
+export default function StorieCard({setStoryId, story}) {
   return (
     <Card sx={{ minWidth: 275 }}>
       <CardContent>
         <Typography sx={{ fontSize: 20 }} color="text.secondary" gutterBottom>
-          Storie numb 1 of this session 123456
+          {story.text}
         </Typography>
-      
+        <button onClick={() => setStoryId(story.id)} > click</button>
    
       </CardContent>
 

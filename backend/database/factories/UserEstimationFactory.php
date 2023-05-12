@@ -20,6 +20,7 @@ class UserEstimationFactory extends Factory
             'user_id' =>  \App\Models\User::all()->random()->id,
             'session_id' =>  \App\Models\Session::all()->random()->id,
             'card_id' =>  \App\Models\Card::all()->random()->id,
+            'story_id' =>  \App\Models\Storie::all()->random()->id,
 
         ];
     }

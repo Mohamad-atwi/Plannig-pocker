@@ -59,6 +59,7 @@ Route::middleware(['cors'])->group(function () {
 
     Route::get('stories', [StorieController::class, 'index']);
     Route::get('stories/{id}', [StorieController::class, 'show']);
+    Route::get('stories/session/{session_id}', [StorieController::class, 'showBySession']);
     Route::post('stories', [StorieController::class, 'store']);
     // Route::put('stories/{id}', [StorieController::class, 'update']);
     Route::delete('stories/{id}', [StorieController::class, 'destroy']);
