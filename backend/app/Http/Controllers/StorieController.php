@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewStory;
 use Illuminate\Http\Request;
 use App\Models\Storie;
 // use Illuminate\Http\Request;
@@ -29,6 +30,7 @@ class StorieController extends Controller
             $requestData = json_decode($request->getContent(), true);
 
             $storie = Storie::create($requestData);
+            NewStory::dispatchIf($storie, $storie->session_id);
 
             return response()->json([
                 'message' => "Storie successfully created.",

@@ -47,16 +47,6 @@ export default function Deck({ votedStories, setVotedStories,sessionId, storyId,
 
   return (
     <div className="Deck">
-      <Box display="flex" justifyContent="flex-end">
-        {selectedCard && !votedStories.includes(storyId) && (
-          <Button variant="outlined" startIcon={<RestartAltIcon />} onClick={handleReset} disabled={!selectedCard && !votedStories.includes(storyId)}>
-            Reset
-          </Button>
-        )}
-        <Button variant="contained" endIcon={<HowToVoteIcon />} style={{ marginLeft: '8px' }} onClick={handleVote} disabled={!selectedCard || votedStories.includes(storyId)}>
-          {votedStories.includes(storyId) ? 'Voted' : 'Vote'}
-        </Button>
-      </Box>
       <Box
         component="div"
         sx={{
@@ -83,6 +73,16 @@ export default function Deck({ votedStories, setVotedStories,sessionId, storyId,
             />
           ))}
         </div>
+      </Box>
+      <Box display="flex" justifyContent="flex-end">
+        {selectedCard && !votedStories.includes(storyId) && (
+          <Button variant="outlined" startIcon={<RestartAltIcon />} onClick={handleReset} disabled={!selectedCard && !votedStories.includes(storyId)}>
+            Reset
+          </Button>
+        )}
+        <Button variant="contained" endIcon={<HowToVoteIcon />} style={{ marginLeft: '8px' }} onClick={handleVote} disabled={!selectedCard || votedStories.includes(storyId)}>
+          {votedStories.includes(storyId) ? 'Voted' : 'Vote'}
+        </Button>
       </Box>
     </div>
   );

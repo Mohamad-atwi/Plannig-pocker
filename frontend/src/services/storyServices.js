@@ -12,3 +12,19 @@ export const getStories = async (sessionId) => {
         console.error(error);
     }
 }
+
+export const createStory = async (text, sessionId) => {
+    try {
+        const response = await axios.post(`${API_URL}/stories`, {
+            text: text,
+            session_id: sessionId
+        }, {
+            headers: {
+                'Cache-Control': 'no-cache'
+            }
+        });
+        return response;
+    } catch (error) {
+        return [];
+    }
+}
