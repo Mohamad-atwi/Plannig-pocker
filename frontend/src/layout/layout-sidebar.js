@@ -44,6 +44,7 @@ export default function LayoutSideBar() {
                 anchor="left"
             >
                 <Toolbar />
+                <h1 style={{marginTop:"-2rem",marginLeft:"0.3rem"}}>TSD-Project</h1>
                 <Divider />
                 <List>
                     <ListItem disablePadding>

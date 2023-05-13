@@ -89,6 +89,20 @@ function JoinsSession() {
                   </Link>
                 </Typography>
               </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="body1" color="textSecondary">
+                Go Back To {" "}
+                  <Link
+                    to="/home"
+                    style={{
+                      textDecoration: "none",
+                      color: "#1565c0",
+                    }}
+                  >
+                    Home
+                  </Link>
+                </Typography>
+              </Grid>
               <Grid item xs={12}>
                 {errorMessage && (
                   <Typography variant="body1" color="error">
