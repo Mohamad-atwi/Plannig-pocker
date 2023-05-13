@@ -13,7 +13,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { Button } from '@mui/material';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import RefreshIcon from '@mui/icons-material/Refresh';
-
+import Paper from '@mui/material/Paper';
 import Deck from '../components/deck-scroller/DeckCard';
 import EstimationTable from '../components/estimation-table/estimation-table';
 import StorieCard from '../components/storie';
@@ -21,6 +21,8 @@ import { pusher } from '../services/pusher'
 import * as storiesServices from "../services/storyServices";
 import * as estimationServices from "../services/estimationServices";
 import * as sessionServices from "../services/sessionServices";
+import StoriesList from '../components/storiesList';
+import StoryForm from '../components/storyForm';
 const drawerWidth = { xs: '80vw', sm: '35vw', md: '25vw' };
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -43,6 +45,7 @@ export default function SessionPage() {
     const [stories, setStories] = useState([]);
     const [storyId, setStoryId] = useState(null);
     const [votedStories, setVotedStories] = useState([]);
+    const [checkOwner, setCheckOwner] = useState(false);
 
     const fetchEstimations = async () => {
         const data = await estimationServices.getEstimations(sessionId);
@@ -58,6 +61,7 @@ export default function SessionPage() {
     const fetchSession = async () => {
         const data = await sessionServices.getSession(sessionId);
         setSession(data.session);
+        setCheckOwner(data.session.owner_id  === JSON.parse(sessionStorage.getItem("user")).id);
         setDeckId(data.session.deck_id);
     };
 
@@ -69,9 +73,9 @@ export default function SessionPage() {
 
     useEffect(() => {
         fetchStories().then(() => {
-            stories[0] === undefined ? setStoryId(null) : setStoryId(stories[0].id) ;
+            stories[0] === undefined ? setStoryId(null) : setStoryId(stories[0].id);
         });
-    },[session])
+    }, [session])
 
 
     useEffect(() => {
@@ -81,19 +85,24 @@ export default function SessionPage() {
             fetchEstimations();
         });
 
+        channel1.bind('new-story', function () {
+            fetchStories();
+        });
+
 
         // Clean up the Pusher subscription when the component unmounts
         return () => {
             channel1.unbind('voting');
+            channel1.unbind('new-story');
             pusher.unsubscribe(`session-${sessionId}`);
         };
     }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         // setHasVoted(votedStories.includes(storyId));
         setSelectedCard(null);
         setOpen(votedStories.includes(storyId))
-    },[votedStories,storyId])
+    }, [votedStories, storyId])
 
     const handleDrawerToggel = () => {
         setOpen(!open);
@@ -126,6 +135,12 @@ export default function SessionPage() {
                 }}
             >
                 <DrawerHeader />
+                {checkOwner ? <StoryForm sessionId={sessionId} /> : <></>}
+                {stories ? (stories.length > 0 ?
+                    <StoriesList setStoryId={setStoryId} stories={stories} />
+                    :
+                    <></>) : <></>
+                }
                 {deckId ? <Deck
                     deckId={deckId}
                     selectedCard={selectedCard}
@@ -138,11 +153,6 @@ export default function SessionPage() {
                 />
                     :
                     <></>}
-                {stories ? (stories.length > 0 ?
-                    stories.map(storie => <StorieCard key={storie.id} setStoryId={setStoryId} story={storie} />)
-                    :
-                    <></>) : <></>
-                }
             </Box>
             <Drawer
                 sx={{
@@ -167,10 +177,32 @@ export default function SessionPage() {
                         Refresh
                     </Button>
                 </DrawerHeader>
+                {checkOwner ? <Paper
+                    elevation={3}
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        padding: '16px',
+                    }}
+                >
+                    <div style={{ display: 'flex' }}>
+                        <Typography variant="h6" sx={{ marginRight: '16px' }}>
+                            Id:
+                        </Typography>
+                        <Typography variant="h6">{session.connectionId}</Typography>
+                    </div>
+                    <div style={{ display: 'flex' }}>
+                        <Typography variant="h6" sx={{ marginRight: '16px' }}>
+                            Password:
+                        </Typography>
+                        <Typography variant="h6">{session.password}</Typography>
+                    </div>
+                </Paper> : <></>}
                 <Divider />
                 <Box sx={{ flexGrow: 1 }} component="div">
                     <EstimationTable
-                        estimations={estimations.filter((estimation)=>estimation.story_id === storyId)}
+                        estimations={estimations.filter((estimation) => estimation.story_id === storyId)}
                         hasVoted={votedStories.includes(storyId)}
                     />
                 </Box>

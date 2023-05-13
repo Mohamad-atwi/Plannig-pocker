@@ -27,7 +27,7 @@ function CreateSession() {
     }
     if (res) {
       setIsCreatedIn(true);
-      navigate("/session");
+      navigate(`/session/${res.data.session.id}`)
     }
     else {
       setError("Invalid credentials");
