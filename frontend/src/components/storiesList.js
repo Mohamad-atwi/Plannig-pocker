@@ -4,14 +4,13 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import StorieCard from './storie';
 
-export default function StoriesList({stories,setStoryId}) {
-    const [story, setStory] = useState(stories[0]);
+export default function StoriesList({stories,setStoryId, story, setStory}) {
     const handleChange = (event, value) => {
-        console.log(value);
+        event.preventDefault();
         setStory(stories[value-1]);
-        setStoryId(value);
+        setStoryId(stories[value - 1].id);
     };
-    useEffect(() => { console.log(stories[0]);console.log(story)},[])
+
     return (
         <Stack spacing={2} sx={{ justifyContent: 'center', alignItems: 'center' }}>
             <StorieCard story={story} />

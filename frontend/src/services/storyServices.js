@@ -28,3 +28,13 @@ export const createStory = async (text, sessionId) => {
         return [];
     }
 }
+
+export const deleteStorie = async (story_id) => {
+
+    try {
+        const response = await axios.delete(`${API_URL}/stories/${story_id}`);
+        return response.status === 200;
+    } catch (error) {
+        console.error(error);
+    }
+}

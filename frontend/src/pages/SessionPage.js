@@ -46,6 +46,9 @@ export default function SessionPage() {
     const [storyId, setStoryId] = useState(null);
     const [votedStories, setVotedStories] = useState([]);
     const [checkOwner, setCheckOwner] = useState(false);
+    const [loading,setLoading] = useState(false);
+
+    const [story, setStory] = useState(stories[0]);
 
     const fetchEstimations = async () => {
         const data = await estimationServices.getEstimations(sessionId);
@@ -55,6 +58,8 @@ export default function SessionPage() {
     const fetchStories = async () => {
         const data = await storiesServices.getStories(sessionId);
         setStories(data);
+        setStory(data[0]);
+        setStoryId(data[0].id);
 
     };
 
@@ -64,6 +69,15 @@ export default function SessionPage() {
         setCheckOwner(data.session.owner_id  === JSON.parse(sessionStorage.getItem("user")).id);
         setDeckId(data.session.deck_id);
     };
+
+    const deleteStorie = async (event) => {
+        event.preventDefault();
+        setLoading(true)
+        await storiesServices.deleteStorie(storyId).then(()=>{
+            fetchStories();
+            setLoading(false);
+        })
+    }
 
     useEffect(() => {
         fetchSession().then(() => {
@@ -136,8 +150,9 @@ export default function SessionPage() {
             >
                 <DrawerHeader />
                 {checkOwner ? <StoryForm sessionId={sessionId} /> : <></>}
+                {checkOwner ? <Box sx={{ display: 'flex', justifyContent: 'center' }}><Button variant="contained" onClick={deleteStorie} disabled={loading}>Delete</Button></Box> : <></>}
                 {stories ? (stories.length > 0 ?
-                    <StoriesList setStoryId={setStoryId} stories={stories} />
+                    <StoriesList setStoryId={setStoryId} stories={stories} story={story} setStory={setStory} />
                     :
                     <></>) : <></>
                 }

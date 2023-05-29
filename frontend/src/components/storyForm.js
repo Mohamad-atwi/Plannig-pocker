@@ -31,11 +31,11 @@ export default function StoryForm({sessionId}) {
             <TextField
                 label="Story"
                 multiline
-                rows={4}
+                rows={3}
                 variant="outlined"
                 value={inputValue}
                 onChange={handleInputChange}
-                inputProps={{ maxLength: 100 }}
+                inputProps={{ maxLength: 255 }}
                 sx={{ marginBottom: '16px', width: '100%', overflowY: 'auto' }}
             />
             <Box sx={{ marginLeft: '8px' }}>
