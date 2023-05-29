@@ -16,7 +16,7 @@ export default function StoriesList({ stories, setStoryId, story, setStory }) {
 
     const handleExport = () => { 
         const csvData = [
-            ['Description'], // Header row
+            ['summary'], // Header row
             ...stories.map(description => [description.text]) // Data rows
         ];
         return csvData;
