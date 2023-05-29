@@ -8,22 +8,26 @@ function JoinsSession() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isJoinedIn, setIsJoinedIn] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleJoin = async (event) => {
     event.preventDefault()
     let res;
     if (sessionid && password) {
-      res = await sessionServices.Join(sessionid, password)
+      setLoading(true)
+      res = await sessionServices.Join(sessionid, password).then(res=>{
+        setLoading(false)
+        if (res.status === 200) {
+          setIsJoinedIn(true);
+          navigate(`/session/${res.data.session.id}`);
+        }
+        else {
+          setErrorMessage("Invalid credentials");
+        }
+      })
     }
-    if (res.status === 200) {
-      setIsJoinedIn(true);
-      navigate(`/session/${res.data.session.id}`);
-    }
-    else {
-      setErrorMessage("Invalid credentials");
-    }
+
   }
 
 
@@ -71,6 +75,7 @@ function JoinsSession() {
                   type="submit"
                   variant="contained"
                   color="primary"
+                  disabled={loading}
                 >
                   Join
                 </Button>

@@ -12,6 +12,7 @@ import BasicCard from "../card";
 
 export default function Deck({ votedStories, setVotedStories,sessionId, storyId, deckId, selectedCard, setSelectedCard, refreshEstimations }) {
   const [cards, setCards] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -27,14 +28,16 @@ export default function Deck({ votedStories, setVotedStories,sessionId, storyId,
     setVotedStories(votedStories.filter((storieId) => storieId !== storyId));
   };
 
-  const handleVote = (event) => {
+  const handleVote = async (event) => {
     event.preventDefault();
     const user = JSON.parse(sessionStorage.user)
-    sessionServices.saveEstimation(user.id, selectedCard.id, sessionId, storyId)
+    setLoading(true)
+    await sessionServices.saveEstimation(user.id, selectedCard.id, sessionId, storyId)
       .then(response => {
         console.log('Vote saved successfully:', response.data);
         refreshEstimations();
         setVotedStories([...votedStories,storyId]);
+        setLoading(false)
       })
       .catch(error => {
         alert("Error while voting!");
@@ -76,11 +79,11 @@ export default function Deck({ votedStories, setVotedStories,sessionId, storyId,
       </Box>
       <Box display="flex" justifyContent="flex-end">
         {selectedCard && !votedStories.includes(storyId) && (
-          <Button variant="outlined" startIcon={<RestartAltIcon />} onClick={handleReset} disabled={!selectedCard && !votedStories.includes(storyId)}>
+          <Button variant="outlined" startIcon={<RestartAltIcon />} onClick={handleReset} disabled={(!selectedCard && !votedStories.includes(storyId))||loading}>
             Reset
           </Button>
         )}
-        <Button variant="contained" endIcon={<HowToVoteIcon />} style={{ marginLeft: '8px' }} onClick={handleVote} disabled={!selectedCard || votedStories.includes(storyId)}>
+        <Button variant="contained" endIcon={<HowToVoteIcon />} style={{ marginLeft: '8px' }} onClick={handleVote} disabled={!selectedCard || votedStories.includes(storyId) || loading}>
           {votedStories.includes(storyId) ? 'Voted' : 'Vote'}
         </Button>
       </Box>
