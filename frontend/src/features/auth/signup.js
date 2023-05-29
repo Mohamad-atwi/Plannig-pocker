@@ -19,6 +19,7 @@ function SignupForm() {
   const [error, setError] = useState("");
   const [isSignedUp, setIsSignedUp] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -34,13 +35,15 @@ function SignupForm() {
     } else if (password === "" || confirmPassword === "") {
       alert("Passwords cannot be empty");
     } else {
-      res = await userServices.createUser(username, password);
-    }
-    if (res) {
-      setIsSignedUp(true);
-      navigate("/login");
-    } else {
-      setError("Invalid credentials");
+      setLoading(true);
+      res = await userServices.createUser(username, password).then(res=>{
+        if (res) {
+          setIsSignedUp(true);
+          navigate("/login");
+        } else {
+          setError("Invalid credentials");
+        }
+      });
     }
   };
 
