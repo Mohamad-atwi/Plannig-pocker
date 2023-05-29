@@ -115,6 +115,7 @@ class StorieController extends Controller
             ], 404);
         }
         $storie->delete();
+        NewStory::dispatchIf($storie, $storie->session_id);
 
         return response()->json([
             'message' => "Storie successfully deleted."
