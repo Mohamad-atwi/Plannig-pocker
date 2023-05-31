@@ -120,4 +120,16 @@ class UserEstimationController extends Controller
             'message' => "User successfully deleted."
         ],200);
     }
+    public function getSessionsByUser($userId)
+{
+    $sessions = UserEstimation::where('user_id', $userId)
+        ->with('session')
+        ->get()
+        ->pluck('session');
+
+    return response()->json([
+        'sessions' => $sessions
+    ], 200);
+}
+
 }

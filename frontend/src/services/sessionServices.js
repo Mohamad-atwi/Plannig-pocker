@@ -10,6 +10,17 @@ export const getSession = async (sessionId) => {
     }
 };
 
+export const getSessionsByUser = async (userId) => {
+    try {
+      const response = await axios.get(`${API_URL}/users/${userId}/sessions`);
+      return response.data.sessions;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  
+
 export const createSession = async (title, password) => {
     const ownerId = JSON.parse(sessionStorage.getItem("user")).id;
     console.log(ownerId);

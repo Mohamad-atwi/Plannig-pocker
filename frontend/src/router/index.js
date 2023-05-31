@@ -16,6 +16,7 @@ import JoinsSession from "../features/session/JoinSession";
 import CreateSession from "../features/session/CreateSession";
 import LayoutSideBar from "../layout/layout-sidebar";
 import TermsAndConditions from "../pages/TermsAndConditions";
+import History from "../features/history/history";
 const index = () => {
   return (
     <Router forceRefresh={true}>
@@ -24,6 +25,7 @@ const index = () => {
           <Route exact path="/" element={<PrivateRoute />}>
             <Route path="/" element={<LayoutSideBar />}>
               <Route path="/" element={<Home />} />
+              <Route path="/history" element={<History />}/>
               <Route path="/session/:sessionId" element={<SessioPage />} />
             </Route>
 
