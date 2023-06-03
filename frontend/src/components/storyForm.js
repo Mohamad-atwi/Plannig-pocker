@@ -106,17 +106,6 @@ export default function StoryForm({ sessionId }) {
         >
           Import Jira file
         </Button>
-        {selectedFileName && <p>Selected file: {selectedFileName}</p>}
-        {summaries.length > 0 && (
-          <div>
-            <h3>Stories:</h3>
-            <ul>
-              {summaries.map((summary, index) => (
-                <li key={index}>{summary}</li>
-              ))}
-            </ul>
-          </div>
-        )}
       </Box>
     </Box>
   );
