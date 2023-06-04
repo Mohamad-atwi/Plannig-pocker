@@ -17,6 +17,7 @@ import CreateSession from "../features/session/CreateSession";
 import LayoutSideBar from "../layout/layout-sidebar";
 import TermsAndConditions from "../pages/TermsAndConditions";
 import History from "../features/history/history";
+import SessionPageHistory from "../pages/SessionPageHistory";
 const index = () => {
   return (
     <Router forceRefresh={true}>
@@ -26,6 +27,7 @@ const index = () => {
             <Route path="/" element={<LayoutSideBar />}>
               <Route path="/" element={<Home />} />
               <Route path="/history" element={<History />}/>
+              <Route path="/session/history/:sessionId" element={<SessionPageHistory />} />
               <Route path="/session/:sessionId" element={<SessioPage />} />
             </Route>
 

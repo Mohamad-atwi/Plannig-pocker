@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material';
 import './history.css';
 
 import * as sessionServices from "../../services/sessionServices";
+import { useNavigate } from 'react-router-dom';
 function History() {
+    const navigate = useNavigate();
     const [session, setSession] = useState([]);
     const [sessionStatus, setSessionStatus] = useState(false);
     const fetchSession = async () => {
@@ -19,6 +21,9 @@ function History() {
         fetchSession()
     }, []);
 
+    const go = (id) => {
+        navigate(`/session/history/${id}`);
+    }
 
     return (
         <div className='table'>
@@ -36,6 +41,11 @@ function History() {
                             <TableRow key={session.id}>
                                 <TableCell>{session.title}</TableCell>
                                 <TableCell>{new Date(session.created_at).toLocaleDateString()}</TableCell>
+                                <TableCell>
+                                    <Button
+                                    onClick={() => go(session.id)}
+                                    >Go</Button>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
