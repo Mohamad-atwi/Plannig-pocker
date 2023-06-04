@@ -5,12 +5,12 @@ import './history.css';
 import * as sessionServices from "../../services/sessionServices";
 function History() {
     const [session, setSession] = useState([]);
-    const[ sessionStatus,setSessionStatus]=useState(false);
+    const [sessionStatus, setSessionStatus] = useState(false);
     const fetchSession = async () => {
         const userId = JSON.parse(sessionStorage.getItem("user")).id;
-        console.log(userId)
-        await sessionServices.getSessionsByUser(userId).then((data)=>{
-        setSession(data);
+        await sessionServices.getSessionsByUser(userId).then((data) => {
+            setSession(Object.values(data));
+            console.log();
 
         });
     };
@@ -32,7 +32,7 @@ function History() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        { session.map((session) => (
+                        {session.map((session) => (
                             <TableRow key={session.id}>
                                 <TableCell>{session.title}</TableCell>
                                 <TableCell>{new Date(session.created_at).toLocaleDateString()}</TableCell>
