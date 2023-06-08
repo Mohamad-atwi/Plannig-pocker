@@ -8,21 +8,27 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
+  useEffect(() => { console.log(loading) }, [loading])
+
   const handleLogin = async (event) => {
     event.preventDefault()
+    setLoading(true);
     let res;
     if (username && password) {
-      res = await userServices.login(username, password)
-    }
-    if (res) {
-      setIsSignedIn(true);
-      navigate("/");
-    }
-    else {
-      setErrorMessage("Invalid credentials");
+      res = await userServices.login(username, password).then((res) => {
+        setLoading(false);
+        if (res) {
+          setIsSignedIn(true);
+          navigate("/");
+        }
+        else {
+          setErrorMessage("Invalid credentials");
+        }
+      })
     }
   }
 
@@ -71,6 +77,7 @@ function LoginForm() {
                   type="submit"
                   variant="contained"
                   color="primary"
+                  disabled={loading}
                 >
                   Sign In
                 </Button>

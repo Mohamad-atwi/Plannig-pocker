@@ -51,6 +51,8 @@ Route::middleware(['cors'])->group(function () {
     Route::post('user_estimations', [UserEstimationController::class, 'store']);
     Route::put('user_estimations/{id}', [UserEstimationController::class, 'update']);
     Route::delete('user_estimations/{id}', [UserEstimationController::class, 'destroy']);
+    Route::get('users/{userId}/sessions', [UserEstimationController::class, 'getSessionsByUser']);
+
 
     Route::get('/decks', [DeckController::class, 'index']);
     Route::get('/decks/{deck}', [DeckController::class, 'show']);
@@ -59,6 +61,7 @@ Route::middleware(['cors'])->group(function () {
 
     Route::get('stories', [StorieController::class, 'index']);
     Route::get('stories/{id}', [StorieController::class, 'show']);
+    Route::get('stories/session/{session_id}', [StorieController::class, 'showBySession']);
     Route::post('stories', [StorieController::class, 'store']);
     // Route::put('stories/{id}', [StorieController::class, 'update']);
     Route::delete('stories/{id}', [StorieController::class, 'destroy']);

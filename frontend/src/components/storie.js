@@ -8,15 +8,15 @@ import Typography from '@mui/material/Typography';
 
 
 
-export default function StorieCard() {
+export default function StorieCard({story}) {
   return (
-    <Card sx={{ minWidth: 275 }}>
+    <Card sx={{ height: 150,overflow: "auto", width: '70%', textAlign: 'center',
+          my: 2,
+          p: 1,}}>
       <CardContent>
         <Typography sx={{ fontSize: 20 }} color="text.secondary" gutterBottom>
-          Storie numb 1 of this session 123456
-        </Typography>
-      
-   
+          {story.text}
+        </Typography>   
       </CardContent>
 
     </Card>

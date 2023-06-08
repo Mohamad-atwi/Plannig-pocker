@@ -32,4 +32,9 @@ class UserEstimation extends Model
     {
         return $this->belongsTo(Card::class);
     }
+
+    public function story()
+    {
+        return $this->belongsTo(Storie::class);
+    }
 }

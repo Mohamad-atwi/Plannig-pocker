@@ -6,6 +6,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import AddIcon from '@mui/icons-material/Add';
 import CreateIcon from '@mui/icons-material/Create';
+import home from"../../assets/34099.jpg"
 function Home() {
   const navigate = useNavigate();
 
@@ -16,11 +17,10 @@ function Home() {
     navigate("/CreateSession")  
    }
   return (
-    <div className="App" >
-      <h1>Welcome To The TSD-Project</h1>
-      <p>Choose the Card</p>
-      <Link to="/session" > go to session</Link>
-      <div style={{ display: 'flex' }}>
+    <div className="App"  style={{textAlign:"center" , margin:"auto"}}>
+      <h1 >Welcome To The Planning Pocker game</h1>
+      {/* <Link to="/session/1" > go to session</Link> */}
+      <div style={{ display: 'flex' , justifyContent:"center"}}>
       <Card sx={{ maxWidth: 345, marginRight: 2 }}>
         <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <AddIcon sx={{ fontSize: 60 }} onClick={handleJoinSession} style={{cursor: 'pointer'}}/>
@@ -38,7 +38,9 @@ function Home() {
         </CardContent>
       </Card>
     </div>
-      {/* <JoinsSession/> */}
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <img src={home} alt="Image" style={{ marginTop: '20px', width: '40%' }} />
+      </div>
     </div>
   );
 }

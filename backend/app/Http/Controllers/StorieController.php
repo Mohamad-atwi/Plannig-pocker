@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewStory;
 use Illuminate\Http\Request;
 use App\Models\Storie;
 // use Illuminate\Http\Request;
@@ -29,6 +30,7 @@ class StorieController extends Controller
             $requestData = json_decode($request->getContent(), true);
 
             $storie = Storie::create($requestData);
+            NewStory::dispatchIf($storie, $storie->session_id);
 
             return response()->json([
                 'message' => "Storie successfully created.",
@@ -48,6 +50,19 @@ class StorieController extends Controller
     public function show($id)
     {
         $storie = Storie::find($id);
+        if (!$storie) {
+            return response()->json([
+                'message' => 'Storie Not Found.'
+            ], 404);
+        }
+        return response()->json([
+            'storie' => $storie
+        ], 200);
+    }
+
+        public function showBySession($session_id)
+    {
+        $storie = Storie::where('session_id',$session_id)->get();
         if (!$storie) {
             return response()->json([
                 'message' => 'Storie Not Found.'
@@ -100,6 +115,7 @@ class StorieController extends Controller
             ], 404);
         }
         $storie->delete();
+        NewStory::dispatchIf($storie, $storie->session_id);
 
         return response()->json([
             'message' => "Storie successfully deleted."

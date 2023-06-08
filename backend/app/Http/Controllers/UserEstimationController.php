@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\VotingEvent;
 use App\Models\UserEstimation;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class UserEstimationController extends Controller
         $user_estimations = UserEstimation::all();
         return response()->json([
             'user_estimations' => $user_estimations
-        ],200);
+        ], 200);
     }
 
     // /**
@@ -35,16 +36,17 @@ class UserEstimationController extends Controller
         //JSON FILE: body: {"user_id": 1,"session_id": 1,"card_id": 1}
         try {
             $user_estimations = UserEstimation::factory()->create($request->all());
+            VotingEvent::dispatchIf($user_estimations, $user_estimations->session_id);
             return response()->json([
                 'message' => "UserEstimation successfully created."
-            ],200);
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => "Error!"
-            ],500);
+            ], 500);
         }
     }
-     // /**
+    // /**
     //  * Display the specified resource.
     //  */
     public function show($id)
@@ -53,15 +55,15 @@ class UserEstimationController extends Controller
         //GET
         //http://127.0.0.1:8000/user_estimations/1
         $user_estimations = UserEstimation::find($id);
-        if(!$user_estimations){
+        if (!$user_estimations) {
             return response()->json([
-                'message'=>'User estimation Not Found.'
-            ],404);
+                'message' => 'User estimation Not Found.'
+            ], 404);
         }
         return response()->json([
             'user_estimations' => $user_estimations
-        ],200);
-        }
+        ], 200);
+    }
 
     // /**
     //  * Update the specified resource in storage.
@@ -104,10 +106,10 @@ class UserEstimationController extends Controller
         //DELETE
         //http://127.0.0.1:8000/user_estimations/10
         $user_estimations = UserEstimation::find($id);
-        if(!$user_estimations){
-          return response()->json([
-             'message'=>'User Not Found.'
-          ],404);
+        if (!$user_estimations) {
+            return response()->json([
+                'message' => 'User Not Found.'
+            ], 404);
         }
 
         // Delete Post
@@ -116,6 +118,18 @@ class UserEstimationController extends Controller
         // Return Json Response
         return response()->json([
             'message' => "User successfully deleted."
-        ],200);
+        ], 200);
+    }
+    public function getSessionsByUser($userId)
+    {
+        $sessions = UserEstimation::where('user_id', $userId)
+            ->with('session')
+            ->get()
+            ->pluck('session')
+            ->unique();
+
+        return response()->json([
+            'sessions' => $sessions
+        ], 200);
     }
 }

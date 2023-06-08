@@ -9,6 +9,7 @@ function CreateSession() {
   const [errorMessage, setErrorMessage] = useState("");
   const [isCreated, setIsCreatedIn] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -16,21 +17,24 @@ function CreateSession() {
     event.preventDefault()
     let res;
 
-   if (sessiontitle === "") {
+    if (sessiontitle === "") {
       alert("title cannot be empty");
     }
-    else if (password === "" ) {
+    else if (password === "") {
       alert("Passwords cannot be empty");
     }
     else {
-      res = await sessionServices.createSession(sessiontitle, password)
-    }
-    if (res) {
-      setIsCreatedIn(true);
-      navigate("/session");
-    }
-    else {
-      setError("Invalid credentials");
+      setLoading(true);
+      res = await sessionServices.createSession(sessiontitle, password).then((res) => {
+        setLoading(false);
+        if (res) {
+          setIsCreatedIn(true);
+          navigate(`/session/${res.data.session.id}`)
+        }
+        else {
+          setError("Invalid credentials");
+        }
+      })
     }
   }
 
@@ -79,13 +83,14 @@ function CreateSession() {
                   type="submit"
                   variant="contained"
                   color="primary"
+                  disabled={loading}
                 >
                   Create
                 </Button>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="body1" color="textSecondary">
-                Go Back To {" "}
+                  Go Back To {" "}
                   <Link
                     to="/home"
                     style={{

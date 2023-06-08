@@ -37,4 +37,9 @@ class Session extends Model
         return $this->hasMany(UserEstimation::class);
     }
 
+    public function stories()
+    {
+        return $this->hasMany(Storie::class);
+    }
+
 }
