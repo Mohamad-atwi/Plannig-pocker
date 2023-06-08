@@ -14,20 +14,50 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { logout } from '../services/userServices';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
+
 const drawerWidth = 240;
 
 export default function LayoutSideBar() {
+    const [open, setOpen] = useState(false);
+    const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
+    const [openExitDialog, setOpenExitDialog] = useState(false);
+
     const [SessionPage, setSessionPage] = useState(false);
     const projectPath = useLocation();
     const navigate = useNavigate();
+
     const handleLogout = () => {
+        setOpenLogoutDialog(true);
+    }
+
+    const handleConfirmLogout = () => {
         logout();
         navigate('/login');
+        setOpenLogoutDialog(false);
+    };
+
+    const handleCancelLogout = () => {
+        setOpenLogoutDialog(false);
+    };
+    const handleExit = () => {
+        setOpenExitDialog(true);
     }
+    const handleConfirmExit = () => {
+        setOpenExitDialog(false);
+        navigate('/');
+    };
+    const handleCancelExit = () => {
+        setOpenExitDialog(false);
+    };
 
     useEffect(() => {
         setSessionPage(projectPath.pathname.includes("session"));
-    })
+    }, [projectPath]);
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -44,7 +74,7 @@ export default function LayoutSideBar() {
                 anchor="left"
             >
                 <Toolbar />
-                <h1 style={{marginTop:"-2rem",marginLeft:"0.3rem"}}>TSD-Project</h1>
+                <h1 style={{ marginTop: "-2rem", marginLeft: "0.3rem" }}>TSD-Project</h1>
                 <Divider />
                 <List>
                     <ListItem disablePadding>
@@ -72,12 +102,12 @@ export default function LayoutSideBar() {
                         </ListItemButton>
                     </ListItem>
                 </List>
-                {SessionPage ?
+                {SessionPage &&
                     <>
                         <Divider />
                         <List>
                             <ListItem disablePadding>
-                                <ListItemButton component={Link} to='/'>
+                                <ListItemButton onClick={handleExit} component={Link} >
                                     <ListItemIcon>
                                         <ExitToAppIcon />
                                     </ListItemIcon>
@@ -86,9 +116,39 @@ export default function LayoutSideBar() {
                             </ListItem>
                         </List>
                     </>
-                    :
-                    <></>}
+                }
             </Drawer>
+
+            <Dialog open={openLogoutDialog} onClose={handleCancelLogout}>
+                <DialogTitle>Logout Confirmation</DialogTitle>
+                <DialogContent>
+                    <p>Are you sure you want to logout?</p>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCancelLogout} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleConfirmLogout} color="primary">
+                        Logout
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            
+            <Dialog open={openExitDialog} onClose={handleCancelExit}>
+                <DialogTitle>Exit Confirmation</DialogTitle>
+                <DialogContent>
+                    <p>Are you sure you want to exit?</p>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCancelExit} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleConfirmExit} color="primary">
+                        Exit
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
             {<Outlet />}
         </Box>
     );

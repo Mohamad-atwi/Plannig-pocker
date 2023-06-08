@@ -23,6 +23,8 @@ import * as estimationServices from "../services/estimationServices";
 import * as sessionServices from "../services/sessionServices";
 import StoriesList from '../components/storiesList';
 import StoryForm from '../components/storyForm';
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+
 const drawerWidth = { xs: '80vw', sm: '35vw', md: '25vw' };
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -38,7 +40,6 @@ export default function SessionPage() {
     const [open, setOpen] = useState(true);
     const [estimations, setEstimations] = useState([]);
     const [selectedCard, setSelectedCard] = useState(null);
-    // const [hasVoted, setHasVoted] = useState(false);
     const { sessionId } = useParams('sessionId');
     const [deckId, setDeckId] = useState(null);
     const [session, setSession] = useState();
@@ -47,8 +48,9 @@ export default function SessionPage() {
     const [votedStories, setVotedStories] = useState([]);
     const [checkOwner, setCheckOwner] = useState(false);
     const [loading, setLoading] = useState(false);
-
     const [story, setStory] = useState(stories[0]);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [loadingDelete, setLoadingDelete] = useState(false);
 
     const fetchEstimations = async () => {
         const data = await estimationServices.getEstimations(sessionId);
@@ -60,7 +62,6 @@ export default function SessionPage() {
         setStories(data);
         setStory(data[0]);
         setStoryId(data[0].id);
-
     };
 
     const fetchSession = async () => {
@@ -70,14 +71,21 @@ export default function SessionPage() {
         setDeckId(data.session.deck_id);
     };
 
-    const deleteStorie = async (event) => {
-        event.preventDefault();
-        setLoading(true)
-        await storiesServices.deleteStorie(storyId).then(() => {
-            fetchStories();
-            setLoading(false);
-        })
-    }
+    const deleteStorie = () => {
+        setOpenDialog(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        setLoadingDelete(true);
+        await storiesServices.deleteStorie(storyId);
+        setLoadingDelete(false);
+        setOpenDialog(false);
+        fetchStories();
+    };
+
+    const handleCancelDelete = () => {
+        setOpenDialog(false);
+    };
 
     useEffect(() => {
         fetchSession().then(() => {
@@ -91,7 +99,6 @@ export default function SessionPage() {
         });
     }, [session])
 
-
     useEffect(() => {
         const channel1 = pusher.subscribe(`session-${sessionId}`);
 
@@ -103,7 +110,6 @@ export default function SessionPage() {
             fetchStories();
         });
 
-
         // Clean up the Pusher subscription when the component unmounts
         return () => {
             channel1.unbind('voting');
@@ -113,9 +119,8 @@ export default function SessionPage() {
     }, []);
 
     useEffect(() => {
-        // setHasVoted(votedStories.includes(storyId));
         setSelectedCard(null);
-        setOpen(votedStories.includes(storyId))
+        setOpen(votedStories.includes(storyId));
     }, [votedStories, storyId])
 
     const handleDrawerToggel = () => {
@@ -149,25 +154,31 @@ export default function SessionPage() {
                 }}
             >
                 <DrawerHeader />
-                {checkOwner ? <StoryForm sessionId={sessionId} /> : <></>}
-                {checkOwner && stories.length > 0 ? <Box sx={{ display: 'flex', justifyContent: 'center' }}><Button variant="contained" onClick={deleteStorie} disabled={loading}>Delete</Button></Box> : <></>}
-                {stories ? (stories.length > 0 ?
-                    <StoriesList setStoryId={setStoryId} stories={stories} story={story} setStory={setStory} />
-                    :
-                    <></>) : <></>
-                }
-                {deckId ? <Deck
-                    deckId={deckId}
-                    selectedCard={selectedCard}
-                    setSelectedCard={setSelectedCard}
-                    refreshEstimations={fetchEstimations}
-                    storyId={storyId}
-                    votedStories={votedStories}
-                    setVotedStories={setVotedStories}
-                    sessionId={sessionId}
-                />
-                    :
-                    <></>}
+                {checkOwner ? <StoryForm sessionId={sessionId} /> : null}
+                {checkOwner && stories.length > 0 ? (
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <Button variant="contained" onClick={deleteStorie} disabled={loadingDelete}>
+                            {loadingDelete ? 'Deleting...' : 'Delete'}
+                        </Button>
+                    </Box>
+                ) : null}
+                {stories ? (
+                    stories.length > 0 ? (
+                        <StoriesList setStoryId={setStoryId} stories={stories} story={story} setStory={setStory} />
+                    ) : null
+                ) : null}
+                {deckId ? (
+                    <Deck
+                        deckId={deckId}
+                        selectedCard={selectedCard}
+                        setSelectedCard={setSelectedCard}
+                        refreshEstimations={fetchEstimations}
+                        storyId={storyId}
+                        votedStories={votedStories}
+                        setVotedStories={setVotedStories}
+                        sessionId={sessionId}
+                    />
+                ) : null}
             </Box>
             <Drawer
                 sx={{
@@ -182,7 +193,7 @@ export default function SessionPage() {
                 open={open}
             >
                 <DrawerHeader>
-                    <IconButton onClick={handleDrawerToggel} sx={{ display: 'block' }} >
+                    <IconButton onClick={handleDrawerToggel} sx={{ display: 'block' }}>
                         <ChevronRightIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap sx={{ flexGrow: 1 }} component="div">
@@ -192,28 +203,30 @@ export default function SessionPage() {
                         Refresh
                     </Button>
                 </DrawerHeader>
-                {checkOwner ? <Paper
-                    elevation={3}
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'flex-start',
-                        padding: '16px',
-                    }}
-                >
-                    <div style={{ display: 'flex' }}>
-                        <Typography variant="h6" sx={{ marginRight: '16px' }}>
-                            Id:
-                        </Typography>
-                        <Typography variant="h6">{session.connectionId}</Typography>
-                    </div>
-                    <div style={{ display: 'flex' }}>
-                        <Typography variant="h6" sx={{ marginRight: '16px' }}>
-                            Password:
-                        </Typography>
-                        <Typography variant="h6">{session.password}</Typography>
-                    </div>
-                </Paper> : <></>}
+                {checkOwner ? (
+                    <Paper
+                        elevation={3}
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'flex-start',
+                            padding: '16px',
+                        }}
+                    >
+                        <div style={{ display: 'flex' }}>
+                            <Typography variant="h6" sx={{ marginRight: '16px' }}>
+                                Id:
+                            </Typography>
+                            <Typography variant="h6">{session.connectionId}</Typography>
+                        </div>
+                        <div style={{ display: 'flex' }}>
+                            <Typography variant="h6" sx={{ marginRight: '16px' }}>
+                                Password:
+                            </Typography>
+                            <Typography variant="h6">{session.password}</Typography>
+                        </div>
+                    </Paper>
+                ) : null}
                 <Divider />
                 <Box sx={{ flexGrow: 1 }} component="div">
                     <EstimationTable
@@ -222,6 +235,18 @@ export default function SessionPage() {
                     />
                 </Box>
             </Drawer>
+            <Dialog open={openDialog} onClose={handleCancelDelete}>
+                <DialogTitle>Confirm Delete</DialogTitle>
+                <DialogContent>
+                    <Typography>Are you sure you want to delete this story?</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCancelDelete}>Cancel</Button>
+                    <Button onClick={handleConfirmDelete} disabled={loadingDelete}>
+                        {loadingDelete ? 'Deleting...' : 'Delete'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }
